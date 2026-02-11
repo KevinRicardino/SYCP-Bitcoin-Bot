@@ -3,13 +3,27 @@ import json
 from datetime import datetime, timedelta, timezone
 
 import websocket
+import bitstamp.client
 
-def comprar():
-    pass
+import credenciais
 
 
-def vender():
-    pass
+def cliente():
+    return bitstamp.client.Trading(
+        username =credenciais.USERNAME,
+        key =credenciais.KEY,
+        secret =credenciais.SECRET
+    )
+
+
+def comprar(quantidade):
+    trading_client = cliente()
+    trading_client.buy_market_order(quantidade)
+
+
+def vender(quantidade):
+    trading_client = cliente()
+    trading_client.sell_market_order(quantidade)
 
 
 def ao_abrir(ws):
@@ -56,9 +70,9 @@ def ao_receber_mensagem(ws, mensagem):
         price = mensagem['data']['price']
 
         if price > 64450:
-            vender()
+            vender(0.0001)
         elif price < 64450:
-            comprar()
+            comprar(0.0001)
         else:
             print(">>> Ainda não há transações no valor desejado...")
 
@@ -77,4 +91,4 @@ if __name__ == "__main__":
                                 on_message=ao_receber_mensagem,
                                 on_error=erro
                                 )
-    ws.run_forever(sslopt={"cert_regs": ssl.CERT_NONE})
+    ws.run_forever(sslopt={"cert_reqs": ssl.CERT_NONE})
