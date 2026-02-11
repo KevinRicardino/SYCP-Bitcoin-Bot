@@ -70,9 +70,9 @@ def ao_receber_mensagem(ws, mensagem):
         price = mensagem['data']['price']
 
         if price > 64450:
-            vender()
+            vender(0.0001)
         elif price < 64450:
-            comprar()
+            comprar(0.0001)
         else:
             print(">>> Ainda não há transações no valor desejado...")
 
@@ -91,4 +91,4 @@ if __name__ == "__main__":
                                 on_message=ao_receber_mensagem,
                                 on_error=erro
                                 )
-    ws.run_forever(sslopt={"cert_regs": ssl.CERT_NONE})
+    ws.run_forever(sslopt={"cert_reqs": ssl.CERT_NONE})
